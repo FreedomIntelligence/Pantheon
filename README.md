@@ -23,7 +23,7 @@ Large-scale social simulation is constrained by fragmented compute, prohibitivel
 | **Heterogeneous Compute Fabric** | CPU (x86/ARM), NVIDIA CUDA, Huawei Ascend (CANN / torch-npu), future backend adapters; scheduling, placement, batching; efficient information flow across heterogeneous resources |
 | **JEV Persona Decision Engine** | Compact policy conditioned on identity + personality + interaction messages + task, outputting an action and its probability; distillation, uncertainty calibration; **p95 <50 ms aspiration under a clearly defined workload** |
 | **Crowdsourced Compute Protocol** | Capability advertising, task leases, identity, attestation, sandboxing, accounting, verification, opt-in sharing |
-| **Collective Cognition** | Crowdsourcing as a general collective cognition mechanism: **decompose — distribute — aggregate**; cognitive tasks distributed to large, behaviorally diverse agent populations, results aggregated by explicit rules |
+| **Collective Cognition** | A general collective cognition mechanism: **decompose — distribute — aggregate**; cognitive tasks distributed to large, behaviorally diverse agent populations, results aggregated by explicit rules |
 | **Distributed Simulation Core** | Sharded agents, efficient environment information aggregation, fast intra-group agent communication channels, event and agent-state management, ticks/discrete events, deterministic replay, checkpoints |
 
 ## Conceptual architecture
@@ -111,7 +111,7 @@ flowchart TB
 - **Fast personalized decisions:** use compact persona-conditioned JEV policies with batched inference; **p95 < 50 ms is a research target for a specified inference workload**, not an achieved end-to-end simulation latency.
 - **Efficient information flow:** aggregate environment information at scale, give agents fast channels to peer decisions within their group, and move data efficiently across heterogeneous compute resources.
 - **Crowdsourced compute:** federate independently contributed clusters through capability discovery, scheduling, bounded leases and verifiable execution.
-- **Collective cognition:** treat crowdsourcing as decompose–distribute–aggregate over model populations, preserving the structural skeleton of human crowdsourcing with models on the supply side.
+- **Collective cognition:** decompose–distribute–aggregate over model populations: cognitive tasks are decomposed, distributed to behaviorally diverse agents, and individual results aggregated under explicit rules.
 - **Hardware portability:** route work across x86/ARM CPU, NVIDIA CUDA GPU, Huawei Ascend NPU, and future backends without assuming identical accelerator toolchains.
 - **Trust by design:** isolate untrusted workers and keep sensitive agent profiles on authorized compute only.
 
@@ -137,11 +137,11 @@ JEV only produces actions and probabilities — it is the fast behavioral layer.
 
 This does not claim to reliably forecast any specific real person's behavior. Use synthetic, consented, or appropriately de-identified data, with privacy-preserving evaluation and safeguards against sensitive individual profiling.
 
-## Collective cognition: crowdsourcing with model populations
+## Collective cognition over model populations
 
-PANTHEON reinterprets crowdsourcing as a **general collective cognition mechanism**: **decompose — distribute — aggregate**. A cognitive task is decomposed into subtasks, distributed to a large, behaviorally diverse population of agents, and the individual results are aggregated under explicit rules.
+PANTHEON treats collective cognition as a **general mechanism for group-level intelligence**: **decompose — distribute — aggregate**. A cognitive task is decomposed into subtasks, distributed to a large, behaviorally diverse population of agents, and the individual results are aggregated under explicit rules.
 
-This preserves the structural skeleton of classical crowdsourcing — task distribution, individual differences, aggregation rules — but **replaces the supply side from humans to models**. Because each agent carries its own persona and makes independent JEV decisions, population-level aggregates can capture diversity of responses rather than a single model's average answer, enabling fast social experiments such as opinion dynamics, judgment aggregation, and survey-like studies at scales impractical with human participants.
+This mirrors the structure of distributed human problem-solving — task distribution, individual differences, aggregation rules — but **the supply side consists of models rather than humans**. Because each agent carries its own persona and makes independent JEV decisions, population-level aggregates can capture diversity of responses rather than a single model's average answer, enabling fast social experiments such as opinion dynamics, judgment aggregation, and survey-like studies at scales impractical with human participants.
 
 ## Simulation infrastructure
 
