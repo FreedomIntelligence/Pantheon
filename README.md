@@ -1,12 +1,14 @@
 # PANTHEON
 
-### One Billion Agents. One Living World.
+**A heterogeneous infrastructure for billion-scale multi-agent simulation**
 
-**Crowdsourced, heterogeneous infrastructure for billion-scale multi-agent simulation.**
+![PANTHEON — One Billion Agents. One Living World.](assets/pantheon-banner.svg)
+
+*A joint project by **CUHKSZ** and **SLAI**.*
 
 > **Status: early-stage research / engineering prototype.** One billion active agents and sub-50 ms persona decisions are research targets, **not achieved benchmarks**. Current Python implementation is a CPU-only reference.
 
-PANTHEON is a FreedomIntelligence initiative to connect independently operated **x86/ARM CPUs, NVIDIA CUDA GPUs, Huawei Ascend NPUs**, and extensible accelerator backends into a coherent fabric for vast populations of autonomous, persona-conditioned agents.
+PANTHEON is a joint project by CUHKSZ and SLAI, developed under FreedomIntelligence, to connect independently operated **x86/ARM CPUs, NVIDIA CUDA GPUs, Huawei Ascend NPUs**, and extensible accelerator backends into a coherent fabric for vast populations of autonomous, persona-conditioned agents.
 
 Unlike conventional LLM agent orchestration, PANTHEON decouples: (1) *agent identity / evolving state*, (2) *lightweight learned decisions*, (3) *placement across heterogeneous hardware*, and (4) *trusted crowdsourced resource sharing*.
 
