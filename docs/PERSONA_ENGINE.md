@@ -4,10 +4,10 @@
 
 ## Interface
 ```
-predict(persona, observation, internal_state, history) -> action_distribution, next_state
+predict(identity, personality, messages, environment, internal_state, task) -> action_distribution, next_state
 ```
 
-Formally: `P(action_t | profile, observation_t, state_t, history_t)`.
+Formally: `P(action_t | identity, personality, messages_t, environment_t, state_t, task)`.
 
 ## Model direction
 - Small transformer / MLP / recurrent policy with persona embeddings.
@@ -17,7 +17,7 @@ Formally: `P(action_t | profile, observation_t, state_t, history_t)`.
 - Quantization and per-hardware compilation where supported.
 - Dynamic per-agent state separate from immutable persona features.
 
-The user's JEB-like decision-model reference is **to be confirmed**; keep the model adapter architecture independent of a particular named paper or model.
+The decision model is the **JEV model**: a compact persona-conditioned policy whose inputs are identity + personality, interaction/communication context (peer decisions, aggregated environment information) and the current task, and whose output is an action together with its probability. Keep the model adapter architecture independent of a particular named paper or model.
 
 ## Latency and quality targets
 **Aspirational target: p95 < 50 ms** for a clearly specified batch size, action space, context length, model revision and device. This is *not* a measured SLA and not the latency for advancing an entire billion-agent simulation tick.
