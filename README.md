@@ -27,23 +27,76 @@ Large-scale simulation is constrained by fragmented compute, prohibitively expen
 
 ## Conceptual architecture
 
+PANTHEON separates **simulation semantics**, **fast persona-conditioned decisions**, and **crowdsourced heterogeneous execution**. The simulation coordinator owns world consistency; a federated control plane discovers resources and leases work to eligible workers; device-specific backends execute simulation and inference tasks.
+
 ```mermaid
-flowchart TD
-    API[Scenario API] --> SIM[Distributed Simulation Coordinator]
-    SIM --> STATE[Sharded Agent and World State]
-    SIM --> DEC[Persona Decision Service]
-    DEC --> MODEL[Small Profile-Conditioned Policy Model]
-    DEC --> SCHED[Heterogeneous Scheduler]
-    SIM --> SCHED
-    SCHED --> CROWD[Crowdsourced Compute Protocol]
-    CROWD --> CPU[CPU: x86 / ARM]
-    CROWD --> CUDA[NVIDIA: CUDA GPU]
-    CROWD --> ASC[Huawei: Ascend NPU]
-    CROWD --> OTHER[Pluggable Accelerators]
-    CROWD --> TRUST[Verification / Security / Accounting]
+flowchart TB
+    SC["Scenario / Experiment API"]
+
+    subgraph RUNTIME["1 · Distributed Simulation Runtime"]
+      direction LR
+      CORE["World & Tick / Event Coordinator"]
+      SHARDS["Agent Shards & Interactions"]
+      STORE["State · Checkpoints · Replay"]
+      CORE <--> SHARDS
+      SHARDS <--> STORE
+    end
+
+    subgraph PERSONA["2 · Persona Decision Engine"]
+      direction LR
+      PROFILE["Persona Profiles & Context"]
+      POLICY["Lightweight Decision Model"]
+      INFER["Batched Inference & Actions"]
+      PROFILE --> POLICY --> INFER
+    end
+
+    subgraph FABRIC["3 · Crowdsourced Compute Fabric"]
+      direction LR
+      DISCOVERY["Worker Discovery & Capabilities"]
+      SCHED["Cross-cluster Scheduler"]
+      LEASE["Task Leasing & Routing"]
+      VERIFY["Security · Verification · Accounting"]
+      DISCOVERY --> SCHED --> LEASE
+      LEASE --> VERIFY
+    end
+
+    subgraph WORKERS["4 · Heterogeneous Workers"]
+      direction LR
+      CPU["CPU Workers<br/>x86 / ARM"]
+      NVIDIA["GPU Workers<br/>NVIDIA CUDA"]
+      ASCEND["NPU Workers<br/>Huawei Ascend"]
+      EXTRA["Extensible<br/>Accelerator Backends"]
+    end
+
+    SC --> CORE
+    SHARDS -->|"Observations / Agent State"| PROFILE
+    INFER -->|"Actions / State Updates"| CORE
+    CORE -->|"Simulation Jobs"| SCHED
+    INFER -->|"Inference Jobs"| SCHED
+    LEASE --> CPU
+    LEASE --> NVIDIA
+    LEASE --> ASCEND
+    LEASE --> EXTRA
+
+    classDef control fill:#e8f3ff,stroke:#397ac0,color:#132b47,stroke-width:1px
+    classDef persona fill:#e9f7f2,stroke:#3b9b83,color:#173d34,stroke-width:1px
+    classDef fabric fill:#fff4e6,stroke:#bb8739,color:#513711,stroke-width:1px
+    classDef worker fill:#f0eafb,stroke:#7967af,color:#32244e,stroke-width:1px
+    class SC,CORE,SHARDS,STORE control
+    class PROFILE,POLICY,INFER persona
+    class DISCOVERY,SCHED,LEASE,VERIFY fabric
+    class CPU,NVIDIA,ASCEND,EXTRA worker
 ```
 
-*This is a target architecture. Remote worker execution and accelerator inference are not yet implemented.*
+**Core design principles**
+
+- **Simulation at scale:** partition agent populations and world state, exchange events, and support deterministic checkpoints and replay.
+- **Fast personalized decisions:** use compact profile-conditioned policies with batched inference; **p95 < 50 ms is a research target for a specified inference workload**, not an achieved end-to-end simulation latency.
+- **Crowdsourced compute:** federate independently contributed clusters through capability discovery, scheduling, bounded leases and verifiable execution.
+- **Hardware portability:** route work across x86/ARM CPU, NVIDIA CUDA GPU, Huawei Ascend NPU, and future backends without assuming identical accelerator toolchains.
+- **Trust by design:** isolate untrusted workers and keep sensitive agent profiles on authorized compute only.
+
+*The diagram describes the target architecture. The current codebase contains a local CPU reference simulator; distributed scheduling, real persona inference, and hardware-specific execution are planned.*
 
 ## Persona decision model
 
